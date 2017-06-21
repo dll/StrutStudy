@@ -9,6 +9,11 @@ import java.util.logging.LogManager;
 
 /**
  * Created by Richard on 2017/6/16.
+ * 继承ActionSupport实现一个Action
+ * 登陆界面通过loginuser.action调用login()方法来处理数据
+ *          login()方法中通过ActionContext调用Session对象，存入输入错误的数据
+ *          通过addActionMessage()方法向页面输出相关信息
+ * 注册页面通过reguser.action调用reg()方法来处理数据
  */
 public class UserAction extends ActionSupport {
     private String INDEX="index";
@@ -63,7 +68,7 @@ public class UserAction extends ActionSupport {
 
                 }
             }else{
-                addActionMessage("该用户不存在，正在跳转到注册页面");
+                addActionMessage("该用户不存在，已经跳转到注册页面");
                 return REG;
             }
         }catch (Exception e){

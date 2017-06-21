@@ -8,6 +8,7 @@
         <constant name="struts.devMode" value="true"/>
         <constant name="struts.enable.DynamicMethodInvocation" value="true"></constant>
 
+    <!--利用通配符配置Action需要调用的方法-->
     <package name="user" namespace="/" extends="struts-default">
         <action name="*user" class="UserBlock.UserAction" method="{1}">
             <result name="index">in.jsp</result>

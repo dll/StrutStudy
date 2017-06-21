@@ -11,40 +11,69 @@
 <head>
     <title>Login</title>
 </head>
+<style>
+    body{
+        padding: 0;
+        margin:0;
+    }
+    h1{
+        background-color: black;
+        color: white;
+    }
+    .subform{
+        width:200px;
+        border-style:solid;
+        border-color: black;
+        border-radius: 2px;
+        padding: 10px;
+        margin-left: 40px;
+        margin-top: 70px;
+
+    }
+
+
+</style>
+
 <body>
 <h1>Login For My Struts</h1>
 <hr>
-<div>
-    <form method="post" action="loginuser.action" id="PF">
 
-            <p>用户名：</p><br>
-            <input type="text" name="username" id="name"><br>
-            <br>
-            <p>密码：</p><br>
-            <input type="password" name="password" id="key"><br>
-            <br>
-            <s:actionmessage></s:actionmessage>
-            <input type="submit" value="登陆" onclick="check()">
+<div class="subform">
+    <form method="post" action="loginuser.action" name="pform" >
 
-            <a href="register.jsp">点我注册</a>
+        <p>用户名：</p><br>
+        <input type="text" name="username" id="name"><br>
+        <br>
+        <p>密码：</p><br>
+        <input type="password" name="password" id="key"><br>
+        <br>
+        <s:actionmessage></s:actionmessage>
+        <input type="submit" value="登陆" onclick="return check(this);"/>
+
+        <a href="register.jsp">点我注册</a>
 
     </form>
-
 </div>
+
+
+
 
 
 </body>
 <script>
-    function check() {
-        var name=document.getElementById("name");
-        var word=document.getElementById("key");
-        if(name==null||name==""||word==null||word==""){
-            alert("用户名和密码不能为空！");
+    function check(form) {
+        if(document.forms.pform.username.value==""){
+            alert("用户名不能为空！")
+            document.forms.pform.username.focus();
             return false;
-        }else {
-            return true;
         }
 
+
+        if(document.forms.pform.password.value==""){
+            alert("密码不能为空！")
+            document.forms.pform.password.focus();
+            return false;
+        }
     }
 </script>
 
