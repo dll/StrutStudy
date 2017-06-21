@@ -4,17 +4,16 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.LogManager;
 
 /**
  * Created by Richard on 2017/6/16.
  */
 public class UserAction extends ActionSupport {
-    private  User user;
     private String INDEX="index";
     private String LOGIN="login";
     private  String REG="register";
-    private UserDao userlist;
     private String username;
     private String password;
 
@@ -34,24 +33,34 @@ public class UserAction extends ActionSupport {
         this.password = password;
     }
 
-    public UserAction(){
-        user.setUsername(username);
-        user.setPassword(password);
-    }
-
-
 
     public String login(){
         try{
-            ArrayList logusr=userlist.up_select(user);
-            if(logusr.size()>=1){
-                User log= (User) logusr.get(0);
-                if(password.equals(log.getPassword())){
-                    UserManagment.login(log);
+            if(username.equals("rekent")){
+                if(password.equals("root")){
+                    /*登陆成功*/
                     return INDEX;
                 }else{
-                    addActionMessage("您输入的用户名或密码错误");
-                    return LOGIN;
+                    ActionContext applicton=ActionContext.getContext();
+                    Map session=applicton.getSession();
+                    int count;
+                    if(session.get("count")==null){
+                        count=0;
+                    }else{
+                        count= (int) session.get("count");
+                    }
+                    if(count>=3){
+                        addActionMessage("错误次数过多");
+                        count=0;
+                        session.put("count",count);
+                        return LOGIN;
+                    }else{
+                        count++;
+                        addActionMessage("您输入的用户名或密码错误"+count);
+                        session.put("count",count);
+                        return LOGIN;
+                    }
+
                 }
             }else{
                 addActionMessage("该用户不存在，正在跳转到注册页面");
@@ -62,5 +71,22 @@ public class UserAction extends ActionSupport {
         }
 
         return LOGIN;
+    }
+
+
+    public String reg(){
+        try{
+            if(username.equals("rekent"))
+            {
+                addActionMessage("该用户已经存在");
+                return REG;
+            }
+            else{
+                return INDEX;
+            }
+        }catch (Exception e){
+                addActionError(e.getMessage());
+        }
+        return REG;
     }
 }

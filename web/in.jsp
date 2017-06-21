@@ -11,6 +11,7 @@
     <title>Welcome</title>
 </head>
 <body>
-    用户名:
+<h1>WelCome to My Struts Page</h1>
+<hr>
 </body>
 </html>

@@ -6,19 +6,13 @@
 
 <struts>
         <constant name="struts.devMode" value="true"/>
-
-        <package name="default" namespace="/" extends="struts-default">
-            <action name="user" class="FirstAttempt.UserAction">
-                <result name="success">/result.jsp</result>
-                <result name="error">/error.jsp</result>
-            </action>
-        </package>
+        <constant name="struts.enable.DynamicMethodInvocation" value="true"></constant>
 
     <package name="user" namespace="/" extends="struts-default">
-        <action name="user" class="UserBlock.UserAction">
-            <result name="index">/in.jsp</result>
-            <result name="login">/login.jsp</result>
-            <result name="register">/register.jsp</result>
+        <action name="*user" class="UserBlock.UserAction" method="{1}">
+            <result name="index">in.jsp</result>
+            <result name="login">login.jsp</result>
+            <result name="register">register.jsp</result>
         </action>
     </package>
 </struts>
