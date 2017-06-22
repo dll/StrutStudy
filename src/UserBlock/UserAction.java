@@ -22,6 +22,17 @@ public class UserAction extends ActionSupport {
     private String username;
     private String password;
 
+    public String getCompassword() {
+        return compassword;
+    }
+
+    public void setCompassword(String compassword) {
+        this.compassword = compassword;
+    }
+
+    private String compassword;
+    private UserDao user;
+
     public String getUsername() {
         return username;
     }
@@ -41,8 +52,11 @@ public class UserAction extends ActionSupport {
 
     public String login(){
         try{
-            if(username.equals("rekent")){
-                if(password.equals("root")){
+            user=new UserDao();
+            ArrayList result=user.up_select(username);
+            if(result.size()>0){
+                User aim= (User) result.get(0);
+                if(aim.getPassword().equals(password)){
                     /*登陆成功*/
                     return INDEX;
                 }else{
@@ -73,25 +87,34 @@ public class UserAction extends ActionSupport {
             }
         }catch (Exception e){
             addActionError(e.getMessage());
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return LOGIN;
         }
-
-        return LOGIN;
     }
 
 
     public String reg(){
         try{
-            if(username.equals("rekent"))
+            user=new UserDao();
+            ArrayList result=user.up_select(username);
+            if(result.size()>0)
             {
                 addActionMessage("该用户已经存在");
                 return REG;
             }
             else{
-                return INDEX;
+                if(user.insert(username,password)){
+                    return INDEX;
+                }else{
+                    addActionMessage("发生未知错误，请重试！");
+                    return REG;
+                }
+
             }
         }catch (Exception e){
                 addActionError(e.getMessage());
+                return REG;
         }
-        return REG;
     }
 }

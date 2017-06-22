@@ -34,7 +34,7 @@
 <body>
 <H1>Register up for My Struts</H1>
 <hr>
-<form method="post" action="*reguser.action" name="rform" class="form">
+<form method="post" action="reguser.action" name="rform" class="form">
 
     <p>请输入用户名：</p><br>
     <input type="text" name="username" id="name"><br>

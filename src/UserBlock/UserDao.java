@@ -15,13 +15,13 @@ public class UserDao implements BaseDAO {
 
 
     @Override
-    public boolean insert(User Add) throws Exception {
+    public boolean insert(String username,String upassword) throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
-        String sql = "insert into userinfo(usrname,password)Values(?,?)";
+        String sql = "insert into userinfo(username,password)Values(?,?)";
         Connection conn = DriverManager.getConnection(url, user, password);
         PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, Add.getUsername());
-        pst.setString(2, Add.getPassword());
+        pst.setString(1, username);
+        pst.setString(2, upassword);
         int i = pst.executeUpdate();
         if (i >= 1) {
             return true;
@@ -41,21 +41,19 @@ public class UserDao implements BaseDAO {
         if (rs.next()) {
             User Get = new User();
             Get.setUsername(rs.getString("username"));
-            Get.getInfomation().setEmail(rs.getString("email"));
-            Get.getInfomation().setNickname(rs.getString("nickname"));
-            Get.getInfomation().setPhone(rs.getString("phone"));
+            Get.setPassword(rs.getString("password"));
             al.add(Get);
         }
         return al;
     }
 
     @Override
-    public boolean delete(User Add) throws Exception {
+    public boolean delete(String username) throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
         String sql = "delete from userinfo where username=?";
         Connection conn = DriverManager.getConnection(url, user, password);
         PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, Add.getUsername());
+        pst.setString(1, username);
         int i = pst.executeUpdate();
         if (i >= 1) {
             return true;
@@ -66,32 +64,31 @@ public class UserDao implements BaseDAO {
     }
 
     @Override
-    public ArrayList up_select(User Add) throws Exception {
+    public ArrayList up_select(String username) throws Exception {
         ArrayList al = new ArrayList();
         Class.forName("com.mysql.jdbc.Driver");
         String sql = "select * from userinfo where username=?";
         Connection conn = DriverManager.getConnection(url, user, password);
         PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, Add.getUsername());
+        pst.setString(1,username);
         ResultSet rs = pst.executeQuery();
         if (rs.next()) {
             User Get = new User();
             Get.setUsername(rs.getString("username"));
-            Get.getInfomation().setEmail(rs.getString("email"));
-            Get.getInfomation().setNickname(rs.getString("nickname"));
-            Get.getInfomation().setPhone(rs.getString("phone"));
+            Get.setPassword(rs.getString("password"));
             al.add(Get);
         }
         return al;
     }
 
     @Override
-    public boolean update(User Add) throws Exception {
+    public boolean update(String username,String upassword) throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
-        String sql = "update userinfo set password=?,email=?,nickname=?,phone=? where username=?";
+        String sql = "update userinfo set password=? where username=?";
         Connection conn = DriverManager.getConnection(url, user, password);
         PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, Add.getUsername());
+        pst.setString(1,upassword);
+        pst.setString(2,username);
         int i = pst.executeUpdate();
         if (i >= 1) {
             return true;

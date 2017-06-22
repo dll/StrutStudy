@@ -14,5 +14,6 @@
 <h1>WelCome to My Struts Page</h1>
 <hr>
 当前登录的用户:${param.username}<br>
+<a href="login.jsp">注销</a>
 </body>
 </html>
