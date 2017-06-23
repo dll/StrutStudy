@@ -1,5 +1,6 @@
 package UserBlock;
 
+import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionContext;
 import javafx.application.Application;
 import org.apache.struts2.views.util.ContextUtil;
@@ -9,75 +10,129 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
+ * Servlet监听器，控制记录用户的登陆注销信息
  * Created by Richard on 2017/6/16.
  */
 public class UserManagment {
-    static class UserListener implements HttpSessionBindingListener{
-        User user;
+    class Userlistener implements HttpSessionBindingListener{
+        private  String username;
 
-        public User getCurrentUser(){
-            return user;
+
+        public String getUsername() {
+            return username;
         }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
 
         @Override
         public void valueBound(HttpSessionBindingEvent httpSessionBindingEvent) {
-            HttpSession session=httpSessionBindingEvent.getSession();
-            ServletContext application=session.getServletContext();
-            ArrayList online= (ArrayList) application.getAttribute("online");
+                ActionContext context = ActionContext.getContext();
+                Map application = context.getApplication();
+                ArrayList online= (ArrayList) application.get("online");
             if(online==null){
-                online=new ArrayList();
-            }
-            online.add(this.user);
-            application.setAttribute("online",online);
+                    online=new ArrayList();
+                }
+            online.add(username);
+            application.put("online",online);
         }
 
         @Override
         public void valueUnbound(HttpSessionBindingEvent httpSessionBindingEvent) {
-            HttpSession session=httpSessionBindingEvent.getSession();
-            ServletContext appliaction=session.getServletContext();
-            ArrayList online= (ArrayList) appliaction.getAttribute("online");
-            online.remove(user);
+            ActionContext context = ActionContext.getContext();
+            Map application = context.getApplication();
+            ArrayList online= (ArrayList) application.get("online");
+            online.remove(username);
         }
+
+
     }
 
-    private static HttpSession currentSession(){
-        return (HttpSession) ActionContext.getContext().getSession();
-    }
+    /*
+            登陆
+                首先判别是否登陆
+                已经登陆---->return
+                没有登陆---->获取对应的Session，存入对应用户名的listener
+     */
 
-    public static void login(User user){
-        HttpSession session=currentSession();
-        UserListener listener=new UserListener();
-        listener.user=user;
-        session.setAttribute("LOGIN_FLAG",listener);
-    }
-
-    public static  void loginout(){
-        HttpSession session=currentSession();
-        if(session==null){
+    public void login(String username){
+        if(islogin(username)){
             return;
+        }else{
+            Userlistener newUser=new Userlistener();
+            newUser.setUsername(username);
+            ActionContext actionContext=ActionContext.getContext();
+            Map session=actionContext.getSession();
+            session.put("username",newUser);
         }
-        session.removeAttribute("LOGIN_FLAG");
-        session.invalidate();
+
     }
 
-    public static  ArrayList onlineList(){
-        HttpSession session=currentSession();
-        ServletContext application=session.getServletContext();
-        ArrayList list= (ArrayList) application.getAttribute("online");
-        return list;
+    /*
+            判断是否登陆：
+                判别条件Session中是否有对应的该用户名的Listener
+                有--->已经登陆，未注销
+                无--->没有登陆
+     */
+    public  boolean islogin(String username){
+        ActionContext actionContext=ActionContext.getContext();
+        Map session=actionContext.getSession();
+        Userlistener judge= (Userlistener) session.get("username");
+        if(judge!=null){
+            return true;
+        }else {
+            return false;
+        }
     }
 
-    public static int online_num(){
-        HttpSession session=currentSession();
-        ServletContext application=session.getServletContext();
-        ArrayList list= (ArrayList) application.getAttribute("online");
-        return list.size();
+    /*
+              注销
+                    首先判断是否登陆
+                    已经登陆--->移除Listener--->true
+                    没有登陆--->false
+
+     */
+
+    public boolean logoff(String username){
+        if(islogin(username)){
+            ActionContext actionContext=ActionContext.getContext();
+            Map session=actionContext.getSession();
+            session.remove(username);
+            return true;
+        }else {
+            return false;
+        }
+    }
+    /*
+            人数统计
+                 返回Session中List的Size。
+     */
+
+    public int returnNum(){
+        ActionContext actionContext=ActionContext.getContext();
+        Map session=actionContext.getSession();
+        ArrayList online= (ArrayList) session.get("online");
+        if(online==null){
+            online=new ArrayList();
+        }
+        return online.size();
     }
 
-
-
-
-
+    /*
+            list返回
+     */
+    public ArrayList  returnlist(){
+        ActionContext actionContext=ActionContext.getContext();
+        Map session=actionContext.getSession();
+        ArrayList online= (ArrayList) session.get("online");
+        if(online==null){
+            online=new ArrayList();
+        }
+        return online;
+    }
 }

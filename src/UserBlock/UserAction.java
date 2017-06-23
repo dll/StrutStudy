@@ -21,6 +21,9 @@ public class UserAction extends ActionSupport {
     private  String REG="register";
     private String username;
     private String password;
+    private String compassword;
+    private UserDao user;
+    private UserManagment managment;
 
     public String getCompassword() {
         return compassword;
@@ -30,8 +33,7 @@ public class UserAction extends ActionSupport {
         this.compassword = compassword;
     }
 
-    private String compassword;
-    private UserDao user;
+
 
     public String getUsername() {
         return username;
@@ -52,12 +54,14 @@ public class UserAction extends ActionSupport {
 
     public String login(){
         try{
+            managment=new UserManagment();
             user=new UserDao();
             ArrayList result=user.up_select(username);
             if(result.size()>0){
                 User aim= (User) result.get(0);
                 if(aim.getPassword().equals(password)){
                     /*登陆成功*/
+                    managment.login(username);
                     return INDEX;
                 }else{
                     ActionContext applicton=ActionContext.getContext();
@@ -96,6 +100,7 @@ public class UserAction extends ActionSupport {
 
     public String reg(){
         try{
+            managment=new UserManagment();
             user=new UserDao();
             ArrayList result=user.up_select(username);
             if(result.size()>0)
@@ -105,6 +110,7 @@ public class UserAction extends ActionSupport {
             }
             else{
                 if(user.insert(username,password)){
+                    managment.login(username);
                     return INDEX;
                 }else{
                     addActionMessage("发生未知错误，请重试！");
