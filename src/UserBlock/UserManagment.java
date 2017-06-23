@@ -103,6 +103,7 @@ public class UserManagment {
             ActionContext actionContext=ActionContext.getContext();
             Map session=actionContext.getSession();
             session.remove(username);
+            session.clear();
             return true;
         }else {
             return false;

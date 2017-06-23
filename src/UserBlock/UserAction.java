@@ -123,4 +123,14 @@ public class UserAction extends ActionSupport {
                 return REG;
         }
     }
+
+    public String off(){
+        managment=new UserManagment();
+        if(managment.logoff(username)){
+            return LOGIN;
+        }else{
+            return INDEX;
+        }
+
+    }
 }
